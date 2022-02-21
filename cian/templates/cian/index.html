@@ -1,0 +1,63 @@
+{% extends 'base.html' %} {% block content %} {% if user.is_authenticated %}
+<section class="py-5 text-center container">
+  <div class="row py-lg-5">
+    <div class="col-lg-6 col-md-8 mx-auto">
+      <form class="bg-light p-4 rounded" method="post">
+        {% csrf_token %} {{ form }}
+        <button class="btn btn-primary my-2" type="submit">
+          Получить данные
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+{% for apartment in apartments_list %}
+<div class="album py-5 bg-light">
+  <div class="container">
+    <div class="row">
+      {% for img in apartment.images.all %}
+      <div class="col-md-4">
+        <div class="card mb-4 shadow-sm">
+          <img src="{{ img.img.url }}" width="100%" height="350" alt="" />
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="btn-group">
+                <a type="button" href="{% url 'apartments:update-image' img.pk %}"
+                  class="btn btn-sm btn-outline-primary">Редактировать</a>
+                <a type="button" class="btn btn-sm btn-outline-danger"
+                  href="{% url 'apartments:delete-image' img.pk %}">Удалить</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <hr />
+    <h5 class="card-title">{{ apartment.address }}</h5>
+    <h5 class="card-title">{{ apartment.rooms }}</h5>
+    <h5 class="card-title">{{ apartment.floor }}</h5>
+    <h5 class="card-title">{{ apartment.price }}</h5>
+    <h5 class="card-title">{{ apartment.commission }}</h5>
+    <p class="card-text">{{ apartment.desc }}</p>
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="btn-group">
+        <a type="button" class="btn btn-sm btn-outline-primary" href="{% url 'apartments:update' apartment.id %}">
+          Редактировать
+        </a>
+        <a class="btn btn-sm btn-outline-danger" href="{% url 'apartments:delete' apartment.id %}">
+          Удалить
+        </a>
+        <a type="button" class="btn btn-sm btn-outline-secondary" href="{% url 'apartments:create_pdf' apartment.pk %}"
+          target="_blank">
+          создать PDF
+        </a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p>Вы не авторизованы!</p>
+  {% endif %}
+</div>
+{% endblock content %}

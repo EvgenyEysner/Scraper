@@ -1,0 +1,35 @@
+@charset "UTF-8";
+
+.container {
+  margin-top: 50px;
+}
+
+button {
+  margin-top: 15px;
+}
+
+label {
+  display: none;
+}
+
+.desc {
+  margin-top: 15px;
+}
+
+.to_crop {
+   width: 100%;
+   display: block;
+}
+
+.not-visible {
+  display: none;
+}
+
+.index-image {
+  display: block;
+  max-width: 100%;
+}
+
+form input {
+    margin-bottom: 5px;
+}

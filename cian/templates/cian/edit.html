@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+{% if user.is_authenticated %}
+<br>
+<div class="container">
+<div class="row">
+    <div class="col-6">
+    <h2>изменить профиль пользователя {{ user }}</h2>
+    <br>
+    <p>Используйте форму ниже чтобы что-то поменять в профиле:</p>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form|crispy }}
+      <button class="btn btn-outline-dark" type="submit">Сохранить</button>
+    </form>
+    </div>
+</div>
+    </div>
+<br>
+{% endif %}
+{% endblock %}

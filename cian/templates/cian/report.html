@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <!-- Required meta tags -->
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  {% load static %}
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  <link href="{% static 'css/cropper.css' %}" rel="stylesheet" />
+  <title>{{ apartment.address }}</title>
+  {% block style %}{% endblock style %}
+    <style type="text/css">
+      
+      @page {
+        size: a4 portrait;
+        /* @frame header_frame { 
+            -pdf-frame-content: header_content;
+            left: 50pt; width: 512pt; top: 20pt; height: 40pt;
+        } */
+        @frame content_frame {          /* Content Frame */
+            left: 50pt; width: 512pt; top: 50pt; height: 632pt;
+        }
+        @frame footer_frame {           /* Another static Frame */
+            -pdf-frame-content: footer_content;
+            left: 50pt; width: 512pt; top: 772pt; height: 20pt;
+        }
+    }
+      
+      @font-face {
+        font-family: "Arial";
+        src: url("/static/fonts/ARIAL.TTF") format("truetype");
+      }
+    .table,
+      td,
+      th {
+        border-bottom: 1px solid #ddd;
+        border-top: 1px solid #ddd;
+        text-align: left;
+      }
+
+    .table {
+        width: 100%;
+      }
+
+    .table th,
+      td {
+        padding: 5px;
+        text-align: left;
+      }
+
+    .td {
+        word-break: inherit;
+      }
+
+    h3 {
+      font-size: 1.2em;
+      text-align: left;
+    }
+
+    h4 {
+      font-size: 1em;
+      text-align: left;
+    }
+
+    h6 {
+      font-size: 1em;
+      text-align: left;
+      white-space: normal;
+    }
+      
+    p {
+        font-size: 1em;
+      }
+
+    .table1 {
+        width: 100%;
+        max-width: 100%;
+        margin-bottom: 5px;
+        background-color: #fff;
+        text-align: center;
+      }
+
+    .table1 td {
+        border-bottom: 1px solid #ddd;
+        border-top: 1px solid #ddd;
+      }
+
+    body {
+      font-family: "Arial";
+      font-size: 15px;
+    }
+    .image {
+      display: block;
+      position: relative;
+
+    }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>{{ apartment.address }}</h1>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Адрес</th>
+              <th>Комнат</th>
+              <th>Этаж</th>
+              <th>Цена</th>
+              <th>Комиссия</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{ apartment.address }}</td>
+              <td>{{ apartment.rooms }}</td>
+              <td>{{ apartment.floor }}</td>
+              <td>{{ apartment.price }}</td>
+              <td>{{ apartment.commission }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <br>
+        <h6>{{ apartment.desc }}</h6>
+        {% for image in apartment.images.all %}
+        <div class="image">
+          <img src="{{image.img.path}}" width="100%" height="350" />
+        </div>
+        {% endfor %}
+        <table class="table1">
+          <td>
+            <img src="{{ user.avatar.path }}" width="300" alt="logo" />
+          </td>
+          <td>
+            <div class="list-group">
+              <br>
+              <h4>Ведущий специалист департамента недвижимости {{user.first_name}} {{user.last_name}}:</h4>
+              <h4>Контактная информация:</h4>
+              <h6>{{ user.phone_1 }}</h6>
+              <h6>{{ user.phone_2 }}</h6>
+              <h6><small class="text-muted">{{ user.email }}</small></h6>
+            </div>
+          </td>
+        </table>
+        <div id="footer_content">
+          <pdf:pagenumber>
+        </div>
+    </div>
+  </body>
+</html>

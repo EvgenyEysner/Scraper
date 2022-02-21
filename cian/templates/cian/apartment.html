@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="album py-5 bg-light">
+  <div class="container">
+    <div class="row row-cols-1 row-cols-sm-6 row-cols-md-3 g-3">
+      {% for img in apartments.images.all %}
+      <div class="col">
+        <a href="#" class="pop card shadow-sm">
+          <img src="{{ img.img.url }}" width="100%" height="450" alt="" />
+        </a>
+        <br>
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="btn-group">
+            <a class="btn btn-sm btn-outline-secondary" href="{% url 'apartments:update-image' img.pk %}">
+              Редактировать
+            </a>
+            <a type="button" class="btn btn-sm btn-outline-secondary" href="{% url 'apartments:delete-image' img.pk %}">
+              Удалить
+            </a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <br>
+    <h5 class="card-title">{{ apartments.address }}</h5>
+    <h5 class="card-title">{{ apartments.rooms }}</h5>
+    <h5 class="card-title">{{ apartments.floor }}</h5>
+    <h5 class="card-title">{{ apartments.price }}</h5>
+    <p class="card-text">{{ apartments.desc }}</p>
+    <br>
+    <div class="btn-group">
+      <a type="button" class="btn btn-sm btn-outline-secondary" href="{% url 'apartments:update' apartments.pk %}">
+        Редактировать
+      </a>
+      <a class="btn btn-sm btn-outline-secondary btn-danger" href="{% url 'apartments:delete' apartments.pk %}">
+        Удалить
+      </a>
+      <a type="button" class="btn btn-sm btn-outline-secondary" href="{% url 'apartments:create_pdf' apartments.pk %}"
+        target="_blank">
+        создать PDF
+      </a>
+    </div>
+  </div>
+  {% include 'snippets/image_modal.html' %}
+</div>
+{% endblock content %}
+{% block javascript %}
+<script>
+  $(document).ready(function () {
+    /* Script to open Modal */
+    $(".pop").on("click", function () {
+      $(".imagepreview").attr("src", $(this).find("img").attr("src"));
+      $("#imagemodal").modal("show");
+    });
+
+    /* SCRIPTS TO HANDLE THE CROPPER BOX */
+    var $image = $("#image");
+    var cropBoxData;
+    var canvasData;
+    $("#imagemodal")
+      .on("shown.bs.modal", function () {
+        $image.cropper({
+          viewMode: 1,
+          aspectRatio: 1 / 1,
+          minCropBoxWidth: 200,
+          minCropBoxHeight: 200,
+          ready: function () {
+            $image.cropper("setCanvasData", canvasData);
+            $image.cropper("setCropBoxData", cropBoxData);
+          },
+        });
+      })
+      .on("hidden.bs.modal", function () {
+        cropBoxData = $image.cropper("getCropBoxData");
+        canvasData = $image.cropper("getCanvasData");
+        $image.cropper("destroy");
+      });
+
+    // Enable zoom in button
+    $(".js-zoom-in").click(function () {
+      $image.cropper("zoom", 0.1);
+    });
+
+    // Enable zoom out button
+    $(".js-zoom-out").click(function () {
+      $image.cropper("zoom", -0.1);
+    });
+
+    /* SCRIPT TO COLLECT THE DATA AND POST TO THE SERVER */
+    $(".js-crop-and-upload").click(function () {
+      var cropData = $image.cropper("getData");
+      $("#id_x").val(cropData["x"]);
+      $("#id_y").val(cropData["y"]);
+      $("#id_height").val(cropData["height"]);
+      $("#id_width").val(cropData["width"]);
+      $("#formEdit").submit();
+    });
+  });
+</script>
+{% endblock javascript %}

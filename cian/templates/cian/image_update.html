@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% block style%}
+<style>
+  img {
+  display: block;
+
+  /* This rule is very important, please don't ignore this */
+  max-width: 100%;
+}
+</style>
+{% endblock style%}
+{% block content %}
+<div class="col">
+  <a href="#" class="pop card shadow-sm">
+    <img class="" src="{{ image.img.url }}" alt="" />
+  </a>
+  <!-- <div class="d-flex justify-content-between align-items-center">
+      <div class="btn-group">
+        <a class="btn btn-sm btn-outline-secondary" href="{#% url 'apartments:update-image' image.pk %#}">
+          Редактировать
+        </a>
+        <a type="button" class="btn btn-sm btn-outline-secondary" href="{% url 'apartments:delete-image' image.pk %}">
+          Удалить
+        </a>
+      </div>
+    </div> -->
+</div>
+<!-- MODAL TO CROP THE IMAGE -->
+<div class="modal fade" id="imagemodal">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title"></h4>
+      </div>
+      <form method="post" enctype="multipart/form-data" id="formEdit"
+        action="{% url 'apartments:update-image' image.pk %}">
+        {% csrf_token %}
+        <div class="modal-body">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col ms-auto">
+                <img src="" id="image">
+              </div>
+            </div>
+          </div>
+          {{ form }}
+        </div>
+      </form>
+      <div class="modal-footer">
+        <div class="btn-group pull-left" role="group">
+          <button type="button" class="btn btn-default js-zoom-in">
+            <span class="glyphicon glyphicon-zoom-in"></span>
+          </button>
+          <button type="button" class="btn btn-default js-zoom-out">
+            <span class="glyphicon glyphicon-zoom-out"></span>
+          </button>
+        </div>
+        <button type="submit" class="btn btn-primary js-crop-and-upload">Сохранить</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block javascript %}
+<script>
+  $(document).ready(function () {
+    /* Script to open Modal */
+    $(".pop").on("click", function () {
+      $("#image").attr("src", $(this).find("img").attr("src"));
+      $("#imagemodal").modal("show");
+    });
+
+    /* SCRIPTS TO HANDLE THE CROPPER BOX */
+    var $image = $("#image");
+    var cropBoxData;
+    var canvasData;
+    $("#imagemodal")
+      .on("shown.bs.modal", function () {
+        $image.cropper({
+          viewMode: 1,
+          aspectRatio: 1 / 1,
+          minCropBoxWidth: 200,
+          minCropBoxHeight: 200,
+          ready: function () {
+            $image.cropper("setCanvasData", canvasData);
+            $image.cropper("setCropBoxData", cropBoxData);
+          },
+        });
+      })
+      .on("hidden.bs.modal", function () {
+        cropBoxData = $image.cropper("getCropBoxData");
+        canvasData = $image.cropper("getCanvasData");
+        $image.cropper("destroy");
+      });
+
+    // Enable zoom in button
+    $(".js-zoom-in").click(function () {
+      $image.cropper("zoom", 0.1);
+    });
+
+    // Enable zoom out button
+    $(".js-zoom-out").click(function () {
+      $image.cropper("zoom", -0.1);
+    });
+
+    /* SCRIPT TO COLLECT THE DATA AND POST TO THE SERVER */
+    $(".js-crop-and-upload").click(function () {
+      var cropData = $image.cropper("getData");
+      $("#id_x").val(cropData["x"]);
+      $("#id_y").val(cropData["y"]);
+      $("#id_height").val(cropData["height"]);
+      $("#id_width").val(cropData["width"]);
+      $("#formEdit").submit();
+    });
+  });
+</script>
+{% endblock javascript %}
