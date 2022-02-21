@@ -1,19 +1,19 @@
 from django.forms import ModelForm, URLInput, HiddenInput, FloatField, FileInput, Form, TextInput
-from .models import Url, Apartment, Image, Profile
+from .models import Apartment, Image, Profile
 from PIL import Image as Img
 
 
-class UrlForm(ModelForm):
-    class Meta:
-        model = Url
-        fields = ['url']
-
-        widgets = {
-            'url': URLInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'ссылка...',
-            }),
-        }
+# class UrlForm(ModelForm):
+#     class Meta:
+#         model = Url
+#         fields = ['url']
+#
+#         widgets = {
+#             'url': URLInput(attrs={
+#                 'class': 'form-control',
+#                 'placeholder': 'ссылка...',
+#             }),
+#         }
 
 
 class ButtonForm(Form):
@@ -24,6 +24,7 @@ class ButtonForm(Form):
                 'placeholder': 'ссылка...',
             }),
         }
+
 
 class ApartmentEditForm(ModelForm):
     class Meta:

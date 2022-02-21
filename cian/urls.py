@@ -1,6 +1,5 @@
 from django.urls import path
-from .views import IndexView, ApartmentDeleteView, ApartmentDetailView, \
-    ApartmentUpdateView, ImageDeleteView, ImageUpdateView, apartments_render_pdf_view, ProfileUpdateView, UserProfile #get_page_data
+from .views import IndexView, ApartmentDeleteView, ApartmentDetailView, ApartmentUpdateView, ImageDeleteView, ImageUpdateView, apartments_render_pdf_view, ProfileUpdateView, UserProfile
 
 app_name = 'apartments'
 

@@ -2,14 +2,7 @@ import random
 import requests
 import json
 import urllib.request
-from threading import Thread
-
-from django.http import JsonResponse
 from fake_useragent import UserAgent
-import time
-import asyncio
-import aiohttp
-from asgiref.sync import sync_to_async
 
 from django.core.files import File
 
@@ -105,8 +98,7 @@ def get_page_data(url):
                             'commission': commission,
                         }
                     )
-                    # save_data(apartments, user)
-                    return(apartments)
+                    return apartments
 
 
 def save_data(apartments_list, user):  # save the scraped data to the database
@@ -131,19 +123,6 @@ def save_data(apartments_list, user):  # save the scraped data to the database
         except Exception as e:
             print(e)
             break
-
-# async def gather_data():
-#     async with aiohttp.ClientSession() as session:
-#         tasks = []
-#         apartments_list = asyncio.create_task(get_page_data(session))
-#         # task = asyncio.create_task(save_data(apartments_list))
-#         tasks.append(apartments_list)
-#         # tasks.append(task)
-#     await asyncio.gather(*tasks)
-#
-#
-# def main():
-#     asyncio.run(gather_data())
 
 
 

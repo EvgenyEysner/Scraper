@@ -120,3 +120,6 @@ GitHub.sublime-settings
 /shop_export(100)
 /test.py# created by virtualenv automatically
 
+/accounts/migrations/
+/cian/migrations/
+/accounts/migrations/
