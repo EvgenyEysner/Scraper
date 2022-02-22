@@ -9,19 +9,10 @@ class InlineImage(admin.TabularInline):
     model = Image
 
 
-# class InlineUrl(admin.TabularInline):
-#     model = Url
-#     readonly_fields = ('url', )
-
 @admin.register(Apartment)
 class AprtmentAdmin(admin.ModelAdmin):
     list_display = ['id', 'address', 'rooms', 'price', 'desc', 'floor', 'owner']
     inlines = [InlineImage, ]
-
-
-# @admin.register(Url)
-# class UrlAdmin(admin.ModelAdmin):
-#     list_display = ['created', 'url']
 
 
 @admin.register(Task)

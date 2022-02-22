@@ -12,7 +12,7 @@ ua = UserAgent()
 
 headers = {
     'User-Agent': ua.random,
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8'
+    'Accept': '*/*'
 }
 
 start_json_template = "window._cianConfig['frontend-offer-card'] = "
@@ -25,9 +25,6 @@ start_json_template = "window._cianConfig['frontend-offer-card'] = "
 
 
 def get_page_data(url):
-
-    # qs = Task.objects.filter(user=user)
-    # for url in qs:
     with requests.get(url, headers=headers, timeout=random.randint(1, 5)) as response:
         html = response.text
         if start_json_template in html:  # get json from website

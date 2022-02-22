@@ -3,19 +3,6 @@ from .models import Apartment, Image, Profile
 from PIL import Image as Img
 
 
-# class UrlForm(ModelForm):
-#     class Meta:
-#         model = Url
-#         fields = ['url']
-#
-#         widgets = {
-#             'url': URLInput(attrs={
-#                 'class': 'form-control',
-#                 'placeholder': 'ссылка...',
-#             }),
-#         }
-
-
 class ButtonForm(Form):
         button = TextInput
         widgets = {

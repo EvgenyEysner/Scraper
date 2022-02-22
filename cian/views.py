@@ -5,10 +5,10 @@ from threading import Thread
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, redirect
 from django.template.loader import get_template
 from django.urls import reverse_lazy
-from django.views.generic import (DeleteView, DetailView, FormView, ListView,
+from django.views.generic import (DeleteView, DetailView, ListView,
                                   UpdateView)
 from django.contrib.auth.decorators import login_required
 from xhtml2pdf import pisa
@@ -21,13 +21,12 @@ from .scraper import save_data, get_page_data
 class IndexView(LoginRequiredMixin, ListView):
     model = Apartment
     template_name = 'cian/index.html'
-    # success_url = reverse_lazy('apartments:home')
-    context_object_name = 'apartments_list'
 
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context['profile'] = Profile.objects.get(user=self.request.user)
-    #     return context
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['apartments_list'] = Apartment.objects.filter(owner=self.request.user.id)
+        context['profile'] = Profile.objects.get(user=self.request.user)
+        return context
 
 
 class ApartmentDetailView(LoginRequiredMixin, DetailView):
@@ -82,7 +81,6 @@ class UserProfile(LoginRequiredMixin, ListView):
     def post(self, request):
         user = self.request.user
         if self.request.POST.get('form_type') == 'form_1':
-            # if request.method == 'POST':
             url = request.POST['url']
             t = Task(url=url, user=user)
             t.save()
@@ -94,10 +92,6 @@ class UserProfile(LoginRequiredMixin, ListView):
                 apartments = get_page_data(url)
                 save_items = Thread(target=save_data, args=(apartments, user, ))
                 save_items.start()
-            # with multiprocessing.Pool(multiprocessing.cpu_count()) as process:
-            #     process.map_async(save_data, apartments, user)
-
-            # save_data(apartments, user)
             return redirect('apartments:home')
 
 
