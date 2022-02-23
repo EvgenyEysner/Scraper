@@ -24,7 +24,7 @@ class IndexView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['apartments_list'] = Apartment.objects.filter(owner=self.request.user.id)
+        context['apartments_list'] = Apartment.objects.filter(owner=self.request.user)
         context['profile'] = Profile.objects.get(user=self.request.user)
         return context
 
@@ -35,37 +35,66 @@ class ApartmentDetailView(LoginRequiredMixin, DetailView):
     context_object_name = 'apartments'
 
     def get_context_data(self, *args, **kwargs):
-        self.object_list = super().get_queryset()
         context = super().get_context_data(**kwargs)
-        context['image'] = Image.objects.all()
+        context['profile'] = Profile.objects.get(user=self.request.user)
         return context
 
 
 class ApartmentDeleteView(LoginRequiredMixin, DeleteView):
     model = Apartment
     templates = 'cian/apartment_confirm_delete.html'
-    success_url = reverse_lazy('apartments:home')
+    success_url = reverse_lazy('apartments:profile')
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['profile'] = Profile.objects.get(user=self.request.user)
+        return context
 
 
 class ImageDeleteView(LoginRequiredMixin, DeleteView):
     model = Image
-    success_url = reverse_lazy('apartments:home')
-    templates = 'cian/index.html'
+    templates = 'cian/image_confirm_delete.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['profile'] = Profile.objects.get(user=self.request.user)
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('apartments:apartment', kwargs={'pk': self.object.apartment.pk})
 
 
 class ApartmentUpdateView(LoginRequiredMixin, UpdateView):
     model = Apartment
     form_class = ApartmentEditForm
-    success_url = reverse_lazy('apartments:home')
     template_name = 'cian/apartment_update.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['profile'] = Profile.objects.get(user=self.request.user)
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('apartments:apartment', kwargs={'pk': self.object.pk})
 
 
 class ImageUpdateView(LoginRequiredMixin, UpdateView):
     model = Image
     form_class = ImageForm
-    success_url = reverse_lazy('apartments:home')
+    success_url = reverse_lazy('apartments:profile')
     template_name = 'cian/image_update.html'
     context_object_name = 'image'
+
+
+class TaskDeleteView(LoginRequiredMixin, DeleteView):
+    model = Task
+    template_name = 'cian/task_delete.html'
+    success_url = reverse_lazy('apartments:profile')
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['profile'] = Profile.objects.get(user=self.request.user)
+        return context
 
 
 class UserProfile(LoginRequiredMixin, ListView):
@@ -76,6 +105,7 @@ class UserProfile(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['profile'] = Profile.objects.get(user=self.request.user)
         context['tasks'] = Task.objects.filter(user=self.request.user)
+        context['apartments_list'] = Apartment.objects.filter(owner=self.request.user)
         return context
 
     def post(self, request):

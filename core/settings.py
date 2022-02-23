@@ -46,7 +46,7 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 
 ACCOUNT_ADAPTER = 'accounts.adapter.MyAccountAdapter'
 
-LOGIN_REDIRECT_URL = '/profile/'
+LOGIN_REDIRECT_URL = 'profile/'
 ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = True
 ACCOUNT_LOGOUT_REDIRECT = 'home'
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
@@ -75,7 +75,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'django_currentuser.middleware.ThreadLocalUserMiddleware',
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -108,7 +107,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -156,6 +154,7 @@ STATICFILES_FINDERS = [
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 

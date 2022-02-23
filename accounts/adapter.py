@@ -5,7 +5,7 @@ from allauth.account.adapter import DefaultAccountAdapter
 class MyAccountAdapter(DefaultAccountAdapter):
 
     def get_login_redirect_url(self, request):
-        path = '/profile'
+        path = 'profile/'
         return path
 
     def get_logout_redirect_url(self, request):
@@ -13,5 +13,5 @@ class MyAccountAdapter(DefaultAccountAdapter):
         return path
 
     def get_signup_redirect_url(self, request):
-        path = '/profile'
+        path = 'profile/'
         return path

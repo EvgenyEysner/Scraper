@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import IndexView, ApartmentDeleteView, ApartmentDetailView, ApartmentUpdateView, ImageDeleteView, ImageUpdateView, apartments_render_pdf_view, ProfileUpdateView, UserProfile
+from .views import IndexView, ApartmentDeleteView, ApartmentDetailView, ApartmentUpdateView, ImageDeleteView, \
+    ImageUpdateView, apartments_render_pdf_view, ProfileUpdateView, UserProfile, TaskDeleteView
 
 app_name = 'apartments'
 
@@ -12,5 +13,6 @@ urlpatterns = [
     path('image/<int:pk>/update', ImageUpdateView.as_view(), name='update-image'),
     path('apartment/<int:pk>/create_pdf', apartments_render_pdf_view, name='create_pdf'),
     path('profile/', UserProfile.as_view(), name='profile'),
+    path('task/<int:pk>', TaskDeleteView.as_view(), name='task-delete'),
     path('<int:pk>/edit', ProfileUpdateView.as_view(), name='edit'),
     ]
