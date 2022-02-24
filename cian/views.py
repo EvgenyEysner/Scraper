@@ -122,7 +122,7 @@ class UserProfile(LoginRequiredMixin, ListView):
                 apartments = get_page_data(url)
                 save_items = Thread(target=save_data, args=(apartments, user, ))
                 save_items.start()
-            return redirect('apartments:home')
+            return redirect('apartments:profile')
 
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
