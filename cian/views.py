@@ -8,8 +8,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.loader import get_template
 from django.urls import reverse_lazy
-from django.views.generic import (DeleteView, DetailView, ListView,
-                                  UpdateView)
+from django.views.generic import DeleteView, DetailView, ListView, UpdateView
 from django.contrib.auth.decorators import login_required
 from xhtml2pdf import pisa
 
@@ -20,116 +19,113 @@ from .scraper import save_data, get_page_data
 
 class IndexView(LoginRequiredMixin, ListView):
     model = Apartment
-    template_name = 'cian/index.html'
+    template_name = "cian/index.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['apartments_list'] = Apartment.objects.filter(owner=self.request.user)
-        context['profile'] = Profile.objects.get(user=self.request.user)
+        context["apartments_list"] = Apartment.objects.filter(owner=self.request.user)
+        context["profile"] = Profile.objects.get(user=self.request.user)
         return context
 
 
 class ApartmentDetailView(LoginRequiredMixin, DetailView):
     model = Apartment
-    template_name = 'cian/apartment.html'
-    context_object_name = 'apartments'
+    template_name = "cian/apartment.html"
+    context_object_name = "apartments"
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['profile'] = Profile.objects.get(user=self.request.user)
+        context["profile"] = Profile.objects.get(user=self.request.user)
         return context
 
 
-class ApartmentDeleteView(LoginRequiredMixin, DeleteView):
-    model = Apartment
-    templates = 'cian/apartment_confirm_delete.html'
-    success_url = reverse_lazy('apartments:profile')
-
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['profile'] = Profile.objects.get(user=self.request.user)
-        return context
+# class ApartmentDeleteView(LoginRequiredMixin, DeleteView):
+#     model = Apartment
+#     templates = 'cian/apartment_confirm_delete.html'
+#     success_url = reverse_lazy('apartments:profile')
+#
+#     def get_context_data(self, *args, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['profile'] = Profile.objects.get(user=self.request.user)
+#         return context
 
 
 class ImageDeleteView(LoginRequiredMixin, DeleteView):
     model = Image
-    templates = 'cian/image_confirm_delete.html'
+    # templates = 'cian/image_confirm_delete.html'
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['profile'] = Profile.objects.get(user=self.request.user)
+        context["profile"] = Profile.objects.get(user=self.request.user)
         return context
 
     def get_success_url(self):
-        return reverse_lazy('apartments:apartment', kwargs={'pk': self.object.apartment.pk})
+        return reverse_lazy(
+            "apartments:apartment", kwargs={"pk": self.object.apartment.pk}
+        )
 
 
 class ApartmentUpdateView(LoginRequiredMixin, UpdateView):
     model = Apartment
     form_class = ApartmentEditForm
-    template_name = 'cian/apartment_update.html'
+    template_name = "cian/apartment_update.html"
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['profile'] = Profile.objects.get(user=self.request.user)
+        context["profile"] = Profile.objects.get(user=self.request.user)
         return context
 
     def get_success_url(self):
-        return reverse_lazy('apartments:apartment', kwargs={'pk': self.object.pk})
+        return reverse_lazy("apartments:apartment", kwargs={"pk": self.object.pk})
 
 
 class ImageUpdateView(LoginRequiredMixin, UpdateView):
     model = Image
     form_class = ImageForm
-    success_url = reverse_lazy('apartments:profile')
-    template_name = 'cian/image_update.html'
-    context_object_name = 'image'
-
-
-class TaskDeleteView(LoginRequiredMixin, DeleteView):
-    model = Task
-    template_name = 'cian/task_delete.html'
-    success_url = reverse_lazy('apartments:profile')
-
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['profile'] = Profile.objects.get(user=self.request.user)
-        return context
+    success_url = reverse_lazy("apartments:profile")
+    template_name = "cian/image_update.html"
+    context_object_name = "image"
 
 
 class UserProfile(LoginRequiredMixin, ListView):
     model = Profile
-    template_name = 'cian/profile.html'
+    template_name = "cian/profile.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['profile'] = Profile.objects.get(user=self.request.user)
-        context['tasks'] = Task.objects.filter(user=self.request.user)
-        context['apartments_list'] = Apartment.objects.filter(owner=self.request.user)
+        context["profile"] = Profile.objects.get(user=self.request.user)
+        context["tasks"] = Task.objects.filter(user=self.request.user)
+        context["apartments_list"] = Apartment.objects.filter(owner=self.request.user)
         return context
 
     def post(self, request):
         user = self.request.user
-        if self.request.POST.get('form_type') == 'form_1':
-            url = request.POST['url']
+        if self.request.POST.get("form_type") == "form_1":
+            url = request.POST["url"]
             t = Task(url=url, user=user)
             t.save()
-            return redirect('apartments:profile')
+            return redirect("apartments:profile")
 
-        elif self.request.POST.get('form_type') == 'form_2':
+        elif self.request.POST.get("form_type") == "form_2":
             qs = Task.objects.filter(user=user)
             for url in qs:
                 apartments = get_page_data(url)
-                save_items = Thread(target=save_data, args=(apartments, user, ))
+                save_items = Thread(
+                    target=save_data,
+                    args=(
+                        apartments,
+                        user,
+                    ),
+                )
                 save_items.start()
-            return redirect('apartments:profile')
+            return redirect("apartments:profile")
 
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     model = Profile
     form_class = ProfileEditForm
-    template_name = 'cian/edit.html'
-    success_url = reverse_lazy('apartments:profile')
+    template_name = "cian/edit.html"
+    success_url = reverse_lazy("apartments:profile")
 
 
 def fetch_pdf_resources(uri, rel):
@@ -153,31 +149,48 @@ def fetch_pdf_resources(uri, rel):
 
     # make sure that file exists
     if not os.path.isfile(path):
-        raise Exception(
-            'media URI must start with %s or %s' % (sUrl, mUrl)
-        )
+        raise Exception("media URI must start with %s or %s" % (sUrl, mUrl))
     return path
+
 
 @login_required
 def apartments_render_pdf_view(request, *args, **kwargs):
-    pk = kwargs.get('pk')
+    pk = kwargs.get("pk")
     apartment = get_object_or_404(Apartment, pk=pk)
     user = Profile.objects.get(user=request.user.id)
 
-    template_path = 'cian/report.html'
+    template_path = "cian/report.html"
     context = {
-        'apartment': apartment,
-        'user': user,
+        "apartment": apartment,
+        "user": user,
     }
     # find the template and render it.
     template = get_template(template_path)
     html = template.render(context)
     result = BytesIO()
     # create a pdf
-    pdf = pisa.pisaDocument(BytesIO(html.encode(
-        'UTF-8')), result, encoding='UTF-8', link_callback=fetch_pdf_resources)
-    apartment.delete() # remove object after file creation
+    pdf = pisa.pisaDocument(
+        BytesIO(html.encode("UTF-8")),
+        result,
+        encoding="UTF-8",
+        link_callback=fetch_pdf_resources,
+    )
+    apartment.delete()  # remove object after file creation
     if not pdf.err:
-        return HttpResponse(result.getvalue(), content_type='application/pdf')
+        return HttpResponse(result.getvalue(), content_type="application/pdf")
 
     return None
+
+
+@login_required
+def task_delete(request, pk):
+    task = Task.objects.get(id=pk)
+    task.delete()
+    return redirect(reverse_lazy("apartments:profile"))
+
+
+@login_required
+def apartment_delete(request, pk):
+    apartment = Apartment.objects.get(id=pk)
+    apartment.delete()
+    return redirect(reverse_lazy("apartments:profile"))
