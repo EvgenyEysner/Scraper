@@ -3,15 +3,14 @@ from allauth.account.adapter import DefaultAccountAdapter
 
 # функция переопределения редиректов allauth
 class MyAccountAdapter(DefaultAccountAdapter):
-
     def get_login_redirect_url(self, request):
-        path = 'profile/'
+        path = "profile/"
         return path
 
     def get_logout_redirect_url(self, request):
-        path = '/'
+        path = "/"
         return path
 
     def get_signup_redirect_url(self, request):
-        path = 'profile/'
+        path = "profile/"
         return path
